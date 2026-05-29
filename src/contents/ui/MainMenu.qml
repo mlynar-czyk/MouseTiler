@@ -1,8 +1,8 @@
-import QtQuick
-import QtQuick.Controls
-import QtQuick.Layouts
-import org.kde.kwin
-import org.kde.kirigami as Kirigami
+import QtQuick 2.12
+import QtQuick.Controls 2.0
+import QtQuick.Layouts 1.0
+import org.kde.kwin 2.0
+import org.kde.kirigami 2.12 as Kirigami
 // import QtWebView
 
 ApplicationWindow {
@@ -49,10 +49,10 @@ ApplicationWindow {
     flags: Qt.FramelessWindowHint | Qt.Window | Qt.BypassWindowManagerHint
     // flags: ixX11 ? Qt.X11BypassWindowManagerHint : flags
 
-    // x: isX11 ? Workspace.virtualScreenSize.width / 2 - width / 2 : x
-    // y: isX11 ? Workspace.virtualScreenSize.height / 2 - height / 2 : y
-    x: Workspace.virtualScreenSize.width / 2 - width / 2
-    y: Workspace.virtualScreenSize.height / 2 - height / 2
+    // x: isX11 ? workspace.virtualScreenSize.width / 2 - width / 2 : x
+    // y: isX11 ? workspace.virtualScreenSize.height / 2 - height / 2 : y
+    x: workspace.virtualScreenSize.width / 2 - width / 2
+    y: workspace.virtualScreenSize.height / 2 - height / 2
 
     function initMainMenu() {
     }
@@ -71,20 +71,20 @@ ApplicationWindow {
             acceptedButtons: Qt.LeftButton
 
             onPressed: {
-                mouseStartX = Workspace.cursorPos.x;
-                mouseStartY = Workspace.cursorPos.y;
+                mouseStartX = workspace.cursorPos.x;
+                mouseStartY = workspace.cursorPos.y;
                 windowStartX = mainMenuRoot.x;
                 windowStartY = mainMenuRoot.y;
             }
 
             onPositionChanged: {
-                mainMenuRoot.x = windowStartX + (Workspace.cursorPos.x - mouseStartX);
-                mainMenuRoot.y = windowStartY + (Workspace.cursorPos.y - mouseStartY);
+                mainMenuRoot.x = windowStartX + (workspace.cursorPos.x - mouseStartX);
+                mainMenuRoot.y = windowStartY + (workspace.cursorPos.y - mouseStartY);
             }
 
             onReleased: {
-                mainMenuRoot.x = windowStartX + (Workspace.cursorPos.x - mouseStartX);
-                mainMenuRoot.y = windowStartY + (Workspace.cursorPos.y - mouseStartY);
+                mainMenuRoot.x = windowStartX + (workspace.cursorPos.x - mouseStartX);
+                mainMenuRoot.y = windowStartY + (workspace.cursorPos.y - mouseStartY);
             }
 
             Label {

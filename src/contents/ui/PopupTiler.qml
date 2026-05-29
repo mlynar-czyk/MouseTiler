@@ -1,7 +1,7 @@
-import QtQuick
-import QtQuick.Layouts
-import org.kde.kwin
-import org.kde.plasma.core as PlasmaCore
+import QtQuick 2.12
+import QtQuick.Layouts 1.0
+import org.kde.kwin 2.0
+import org.kde.plasma.core 2.0 as PlasmaCore
 
 // Window {
 PlasmaCore.Dialog {
@@ -45,7 +45,7 @@ PlasmaCore.Dialog {
     y: clientArea.y
     //flags: Qt.Popup | Qt.BypassWindowManagerHint | Qt.FramelessWindowHint
     // flags: Qt.Tool | Qt.BypassWindowManagerHint | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus
-    flags: (root.config.displayAs == 0 ? 0 : Qt.Popup) | (Qt.BypassWindowManagerHint | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus | Qt.WindowTransparentForInput)
+    flags: (root.config.displayAs == 0 ? 0 : Qt.Popup) | (Qt.BypassWindowManagerHint | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus /* | Qt.WindowTransparentForInput */)
     // color: "transparent" // Window
     visible: false
     backgroundHints: PlasmaCore.Types.NoBackground // PlasmaCore.Dialog
@@ -73,17 +73,24 @@ PlasmaCore.Dialog {
     }
 
     function updateScreen(forceUpdate = false) {
-        if (forceUpdate || activeScreen != Workspace.activeScreen) {
-            root.logE('updateScreen ' + Workspace.virtualScreenSize);
-            if (activeScreen != Workspace.activeScreen) {
-                autoTiler.updateAutoTilersInPopupTiler();
+        if (forceUpdate || activeScreen != workspace.activeScreen) {
+            if (activeScreen != workspace.activeScreen) {
+                try {
+                    autoTiler.updateAutoTilersInPopupTiler();
+                } catch (e) {
+                    console.error('MouseTiler: updateAutoTilersInPopupTiler CAUGHT: ' + e);
+                }
             }
-            autoTiler.updateShouldShowScreenEdges();
+            try {
+                autoTiler.updateShouldShowScreenEdges();
+            } catch (e) {
+                console.error('MouseTiler: updateShouldShowScreenEdges CAUGHT: ' + e);
+            }
             // shouldShowAutoTileScroll = autoTiler.shouldShowAutoTileScroll();
-            activeScreen = Workspace.activeScreen;
-            clientArea = Workspace.clientArea(KWin.FullScreenArea, Workspace.activeScreen, Workspace.currentDesktop);
+            activeScreen = workspace.activeScreen;
+            clientArea = workspace.clientArea(workspace.FullScreenArea, workspace.activeScreen, workspace.currentDesktop);
 
-            let localCursorPos = Workspace.activeScreen.mapFromGlobal(root.getCursorPosition());
+            let localCursorPos = Qt.point(root.getCursorPosition().x - clientArea.x, root.getCursorPosition().y - clientArea.y);
 
             let visibleHeight = virtualDesktopVisibilityOverride || root.config.virtualDesktopVisibility != 1 ? layouts.height : 0;
 
@@ -141,9 +148,6 @@ PlasmaCore.Dialog {
                 }
             }
 
-            // positionX = localCursorPos.x - layouts.width / 2;
-            // positionY = localCursorPos.y - (layouts.height + popupHint.height + 2) / 2;
-
             if (positionX < 0) {
                 positionX = 0;
             } else if (positionX + layouts.width > popupTiler.width) {
@@ -172,8 +176,8 @@ PlasmaCore.Dialog {
                 let triggerRight = Math.min(positionX + layouts.width + config.revealMargin, popupTiler.width);
                 let triggerTop = Math.max(positionY - config.revealMargin, 0);
                 let triggerBottom = Math.min(positionY + totalHeight + config.revealMargin, popupTiler.height);
-                let leftTop = Workspace.activeScreen.mapToGlobal(Qt.point(triggerLeft, triggerTop));
-                let rightBottom = Workspace.activeScreen.mapToGlobal(Qt.point(triggerRight, triggerBottom));
+                let leftTop = Qt.point(triggerLeft + clientArea.x, triggerTop + clientArea.y);
+                let rightBottom = Qt.point(triggerRight + clientArea.x, triggerBottom + clientArea.y);
                 revealBox = { left: leftTop.x, right: rightBottom.x, top: leftTop.y, bottom: rightBottom.y };
                 updateRevealed(true);
             } else {
@@ -265,7 +269,9 @@ PlasmaCore.Dialog {
                     break;
                 }
             default:
-                let layout = layoutRepeater.model[activeLayoutIndex].tiles[activeTileIndex];
+                let layoutTiles = layoutRepeater.model[activeLayoutIndex].tiles;
+                let layout = layoutTiles && activeTileIndex < layoutTiles.length ? layoutTiles[activeTileIndex] : null;
+                if (!layout) break;
                 let hintWidth = layout.w == undefined ? layout.pxW : layout.w / 100 * clientArea.width;
                 let hintHeight = layout.h == undefined ? layout.pxH : layout.h / 100 * clientArea.height;
                 let hintX = (layout.x == undefined ? layout.pxX : layout.x / 100 * clientArea.width) - (layout.aX == undefined ? 0 : layout.aX * hintWidth / 100);
@@ -321,7 +327,7 @@ PlasmaCore.Dialog {
                         } else {
                             // hint = '<b>Drop</b> - Add new virtual desktop, and move window';
                             // hint = '<b>Drop</b> - Move window to a new virtual desktop without switching';
-                            hint = '<b>Drop</b> - Move window to a new virtual desktop then go back to ' + root.virtualDesktopAtMoveStart.name;
+                            hint = '<b>Drop</b> - Move window to a new virtual desktop then go back to ' + workspace.desktopName(root.virtualDesktopAtMoveStart);
                         }
                         break;
                     case 1:
@@ -331,7 +337,7 @@ PlasmaCore.Dialog {
                         } else {
                             // hint = '<b>Drop</b> - Add new virtual desktop, and maximize window';
                             // hint = '<b>Drop</b> - Maximize window on a new virtual desktop without switching';
-                            hint = '<b>Drop</b> - Maximize window on a new virtual desktop then go back to ' + root.virtualDesktopAtMoveStart.name;
+                            hint = '<b>Drop</b> - Maximize window on a new virtual desktop then go back to ' + workspace.desktopName(root.virtualDesktopAtMoveStart);
                         }
                         break;
                 }
@@ -339,7 +345,7 @@ PlasmaCore.Dialog {
                     hint += ' (<b>' + root.config.shortcutMoveOnDrop + '</b>)';
                 }
             } else {
-                let virtualDesktopName = root.virtualDesktops[activeVirtualDesktopIndex].desktop.name;
+                let virtualDesktopName = workspace.desktopName(root.virtualDesktops[activeVirtualDesktopIndex].desktop);
                 let virtualDesktopHoverChanged = activeVirtualDesktopIndex != root.virtualDesktopIndexAtMoveStart;
                 switch (config.virtualDesktopDropAction) {
                     case 0:
@@ -351,7 +357,7 @@ PlasmaCore.Dialog {
                         } else {
                             // hint = '<b>Hover</b> - Switch to ' + virtualDesktopName + '<br><b>Drop</b> - Move window to ' + virtualDesktopName;
                             // hint = '<b>Hover</b> - Switch to ' + virtualDesktopName + '<br><b>Drop</b> - Move window to ' + virtualDesktopName + ' without switching';
-                            hint = '<b>Drop</b> - Move window to ' + virtualDesktopName + ' then go back to ' + root.virtualDesktopAtMoveStart.name;
+                            hint = '<b>Drop</b> - Move window to ' + virtualDesktopName + ' then go back to ' + workspace.desktopName(root.virtualDesktopAtMoveStart);
                         }
                         break;
                     case 1:
@@ -363,7 +369,7 @@ PlasmaCore.Dialog {
                         } else {
                             // hint = '<b>Hover</b> - Switch to ' + virtualDesktopName + '<br><b>Drop</b> - Maximize window on ' + virtualDesktopName;
                             // hint = '<b>Hover</b> - Switch to ' + virtualDesktopName + '<br><b>Drop</b> - Maximize window on ' + virtualDesktopName + ' without switching';
-                            hint = '<b>Drop</b> - Maximize window on ' + virtualDesktopName + ' then go back to ' + root.virtualDesktopAtMoveStart.name;
+                            hint = '<b>Drop</b> - Maximize window on ' + virtualDesktopName + ' then go back to ' + workspace.desktopName(root.virtualDesktopAtMoveStart);
                         }
                         break;
                 }
@@ -385,7 +391,7 @@ PlasmaCore.Dialog {
             let tile = layoutRepeater.model[activeLayoutIndex].tiles[activeTileIndex];
             if (root.centerInTile && hasValidPopupDropHint) {
                 hint = '<b>Center in tile</b> - will not resize the window' + (root.config.hintCenterInTile ? '<br>Toggle with <b>' + root.config.shortcutCenterInTile + '</b>' : '');
-            } else if (tile.hint) {
+            } else if (tile && tile.hint) {
                 switch (special) {
                     case 'SPECIAL_KEEP_ABOVE':
                         hint = tile.hint + '<br>Currently <b>' + (root.currentlyMovedWindow.keepAbove ? 'Enabled' : 'Disabled') + '</b>';
@@ -413,7 +419,7 @@ PlasmaCore.Dialog {
                 if (root.moveToVirtualDesktopOnTile) {
                     hint = 'Tile window on current virtual dekstop';
                 } else {
-                    hint = 'Tile window on ' + Workspace.currentDesktop.name + ' then go back to ' + root.virtualDesktopAtMoveStart.name;
+                    hint = 'Tile window on ' + workspace.desktopName(workspace.currentDesktop) + ' then go back to ' + workspace.desktopName(root.virtualDesktopAtMoveStart);
                 }
                 if (root.config.hintMoveOnDrop) {
                     hint += ' (<b>' + root.config.shortcutMoveOnDrop + '</b>)';
@@ -587,8 +593,6 @@ PlasmaCore.Dialog {
                 rowSpacing: root.config.gridSpacing
                 anchors.fill: parent
                 anchors.margins: root.config.gridSpacing
-                uniformCellWidths: true
-                uniformCellHeights: true
 
                 Repeater {
                     id: layoutRepeater
@@ -596,8 +600,10 @@ PlasmaCore.Dialog {
 
                     Rectangle {
                         id: tiles
-                        width: root.config.gridWidth
-                        height: root.config.gridHeight
+                        Layout.preferredWidth: root.config.gridWidth
+                        Layout.preferredHeight: root.config.gridHeight
+                        Layout.fillWidth: false
+                        Layout.fillHeight: false
                         color: "transparent"
                         border.color: modelData.activeAutoTiler ? colors.tileBorderColor : colors.borderColor
                         border.width: 1
@@ -741,8 +747,8 @@ PlasmaCore.Dialog {
                         property bool currentVirtualDesktop: root.currentVirtualDesktopIndex == index
                         property bool activeVirtualDesktop: activeVirtualDesktopIndex == index
 
-                        width: 34
-                        height: 34
+                        Layout.preferredWidth: 34
+                        Layout.preferredHeight: 34
 
                         Rectangle {
                             anchors.fill: parent
@@ -920,7 +926,7 @@ PlasmaCore.Dialog {
                     if (switchVirtualDesktop) {
                         if (config.virtualDesktopHoverTime == 0) {
                             autoTiler.virtualDesktopAboutToChange(); // Notify to remove window from current virtual desktop auto-tiler
-                            Workspace.currentDesktop = root.virtualDesktops[activeVirtualDesktopIndex].desktop;
+                            workspace.currentDesktop = root.virtualDesktops[activeVirtualDesktopIndex].desktop;
                         } else {
                             activeVirtualDesktopHoverTime = Date.now();
                         }
@@ -928,7 +934,7 @@ PlasmaCore.Dialog {
                     updateHintContent();
                 } else if (switchVirtualDesktop && config.virtualDesktopHoverTime > 0 && Date.now() - activeVirtualDesktopHoverTime > config.virtualDesktopHoverTime) {
                     autoTiler.virtualDesktopAboutToChange(); // Notify to remove window from current virtual desktop auto-tiler
-                    Workspace.currentDesktop = root.virtualDesktops[activeVirtualDesktopIndex].desktop;
+                    workspace.currentDesktop = root.virtualDesktops[activeVirtualDesktopIndex].desktop;
                     updateHintContent();
                 }
 

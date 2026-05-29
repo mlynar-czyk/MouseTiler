@@ -7,12 +7,10 @@ KDE KWin Script for tiling windows.
 Allows you to tile your windows with minimum effort by moving the mouse just a few pixels.
 </pre>
 
-* Compatible with KDE Plasma 6+ (compatibility with previous versions is unknown).
+* Compatible with KDE Plasma 5 (KWin 5.27+). Ported from the [upstream MouseTiler](https://github.com/rxappdev/MouseTiler) for KDE Plasma 6.
 
 * Tested on:
-    - Fedora 42 KDE running Wayland and X11 with Plasma version 6.5.2 and 6.5.4
-    - Debian 13 running Plasma version 6.3.6
-    - FreeBSD 15.0 running X11 with Plasma version 6.4.5
+    - Debian Trixie running Wayland with KDE Plasma 5.27 and KWin 5.27
 
 [![kde-store](https://img.shields.io/badge/KDE%20Store-download-blue?logo=KDE)](https://store.kde.org/p/2334027)
 
@@ -199,6 +197,10 @@ If the mouse tiler configuration contains corrupted data, it can be manually del
 Compatible with:
 * <a href="https://github.com/rxappdev/RememberWindowPositions">Remember Window Positions</a> - use the Mouse Tiler to move your windows into position, and restore them next time you start the application. Ultimate combo. (Originally Remember Window Positions was meant to be part of the Mouse Tiler).
 
+## <p id="support"></p>Support the project
+
+MouseTiler for Plasma 5 is a port of the [upstream project](https://github.com/rxappdev/MouseTiler) by rxappdev. Consider [sponsoring the original author](https://github.com/rxappdev/MouseTiler) if you find the tool useful.
+
 ## <p id="getintouch"></p>Get in touch ##
 
-Join the official discord channel https://discord.gg/Js6AYsnQQj to discuss, report bugs or find guides.
+For issues related to this Plasma 5 port, open an issue on the [GitHub repository](https://github.com/mlynar-czyk/MouseTiler).

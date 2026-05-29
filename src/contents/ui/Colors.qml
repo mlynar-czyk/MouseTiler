@@ -1,5 +1,5 @@
-import QtQuick
-import org.kde.kirigami as Kirigami
+import QtQuick 2.12
+import org.kde.kirigami 2.12 as Kirigami
 
 Item {
     Kirigami.Theme.colorSet: Kirigami.Theme.View

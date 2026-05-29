@@ -1,8 +1,8 @@
-import QtQuick
-import org.kde.kwin
-import org.kde.plasma.core as PlasmaCore
-import org.kde.kirigami as Kirigami
-import org.kde.plasma.components as PlasmaComponents
+import QtQuick 2.12
+import org.kde.kwin 2.0
+import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.kirigami 2.12 as Kirigami
+import org.kde.plasma.components 2.0 as PlasmaComponents
 
 // Window {
 PlasmaCore.Dialog {
@@ -17,7 +17,7 @@ PlasmaCore.Dialog {
 
     property var clientArea: ({width: 1, height: 1, x: 0, y: 0})
     property var tilePadding: 2
-    property list<var> convertedOverlay: ([])
+    property var convertedOverlay: []
 
     property int skipIndex: -1
     property int activeIndex: -1
@@ -47,7 +47,7 @@ PlasmaCore.Dialog {
 
     property int gridSpacing: 20
 
-    property list<var> validWindows: ([])
+    property var validWindows: []
 
     width: clientArea.width
     height: clientArea.height
@@ -76,17 +76,17 @@ PlasmaCore.Dialog {
     function updateValid(addedWindow) {
         let valid = [];
 
-        for (let i = 0; i < Workspace.stackingOrder.length; i++) {
-            let window = Workspace.stackingOrder[i];
+        for (let i = 0; i < workspace.clients.length; i++) {
+            let window = workspace.clients[i];
             if (window == addedWindow) continue;
             if (!root.isValidWindow(window)) continue;
             if (window.fullScreen) continue;
             // if (window.maximizeMode > 0) continue;
             if (excludeAutoTiled && window.mt_auto) continue;
             if (excludeMinimized && window.minimized) continue;
-            if (excludeOtherScreens && window.output != activeScreen) continue;
-            if (excludeOtherDesktops && window.desktops.length > 0 && !window.desktops.includes(currentDesktop)) continue;
-            if (excludeOtherActivities && window.activities.length > 0 && !window.activities.includes(currentActivity)) continue;
+            if (excludeOtherScreens && window.screen != activeScreen) continue;
+            if (excludeOtherDesktops && window.desktops && window.desktops.length > 0 && !window.desktops.some(d => d.x11DesktopNumber == currentDesktop)) continue;
+            if (excludeOtherActivities && window.activities && window.activities.length > 0 && !window.activities.includes(currentActivity)) continue;
             valid.push(window);
         }
 
@@ -159,7 +159,7 @@ PlasmaCore.Dialog {
         windowSuggestions.layoutIndex = layoutIndex;
         windowSuggestions.tileIndex = tileIndex;
 
-        clientArea = Workspace.clientArea(KWin.FullScreenArea, activeScreen, currentDesktop);
+        clientArea = workspace.clientArea(workspace.FullScreenArea, activeScreen, currentDesktop);
         activeIndex = 0;
         skipIndex = tileIndex;
 
@@ -247,10 +247,10 @@ PlasmaCore.Dialog {
             if (index != -1) {
                 localWindows.splice(index, 1);
 
-                if (!window.desktops.includes(currentDesktop)) {
-                    window.desktops = [currentDesktop];
+                if (window.desktops && !window.desktops.some(d => d.x11DesktopNumber == currentDesktop)) {
+                    window.desktop = currentDesktop;
                 }
-                if (!window.activities.includes(currentActivity)) {
+                if (window.activities && !window.activities.includes(currentActivity)) {
                     window.activities = [currentActivity];
                 }
                 if (window.mt_auto) {
@@ -266,7 +266,7 @@ PlasmaCore.Dialog {
                     window.mt_originalSize = {x: window.x, y: window.y, width: window.width, height: window.height};
                 }
                 root.moveAndResizeWindow(window, geometry);
-                Workspace.raiseWindow(window);
+                workspace.activeClient = window;
 
                 activeIndex = 0;
 
@@ -402,46 +402,45 @@ PlasmaCore.Dialog {
                         property int previewActualWidth: previewRatio > cellRatio ? windowSuggestions.cellWidth : windowSuggestions.cellHeight * previewRatio
                         property int previewActualHeight: previewRatio > cellRatio ? windowSuggestions.cellWidth / previewRatio : windowSuggestions.cellHeight
 
-                        WindowThumbnail {
-                            id: preview
-                            client: modelData
+                        MouseArea {
                             width: previewActualWidth
                             height: previewActualHeight
                             anchors.centerIn: parent
                             anchors.verticalCenterOffset: -((textSize + cellBottomMargin) / 2)
-
-                            TapHandler {
-                                gesturePolicy: TapHandler.ReleaseWithinBounds
-                                onTapped: addWindowToSelected(modelData);
-                            }
+                            onClicked: addWindowToSelected(modelData)
 
                             Kirigami.Icon {
                                 id: icon
-                                width: Kirigami.Units.iconSizes.large
-                                height: Kirigami.Units.iconSizes.large
+                                width: Kirigami.Units.iconSizes.large * 4
+                                height: Kirigami.Units.iconSizes.large * 4
                                 source: modelData.icon
-                                anchors.horizontalCenter: preview.horizontalCenter
-                                anchors.verticalCenter: preview.bottom
-                                anchors.verticalCenterOffset: -Math.round(height / 4)
+                                anchors.centerIn: parent
+                                anchors.verticalCenterOffset: -((textSize + cellBottomMargin) / 2)
 
-                                PlasmaComponents.Label {
-                                    id: text
-                                    width: windowSuggestions.cellWidth
-                                    height: textSize
-                                    text: modelData.caption
+                                Item {
                                     anchors.top: parent.bottom
                                     anchors.horizontalCenter: parent.horizontalCenter
-                                    horizontalAlignment: Text.AlignHCenter
-                                    elide: Text.ElideRight
-                                    color: "white"
+                                    width: windowSuggestions.cellWidth
+                                    height: textSize
 
-                                    background: Rectangle {
-                                        anchors.centerIn: parent
+                                    PlasmaComponents.Label {
+                                        id: text
+                                        width: parent.width
+                                        height: parent.height
+                                        text: modelData.caption
+                                        horizontalAlignment: Text.AlignHCenter
+                                        elide: Text.ElideRight
+                                        color: "white"
+                                    }
+
+                                    Rectangle {
+                                        anchors.centerIn: text
                                         anchors.verticalCenterOffset: 3
-                                        height: parent.height + 4
-                                        width: parent.contentWidth + 6
+                                        height: text.height + 4
+                                        width: text.contentWidth + 6
                                         color: "#66000000"
                                         radius: 3
+                                        z: -1
                                     }
                                 }
                             }

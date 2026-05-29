@@ -1,6 +1,6 @@
-import QtQuick
-import QtCore
-import org.kde.kwin
+import QtQuick 2.12
+import Qt.labs.settings 1.0
+import org.kde.kwin 2.0
 
 // Window {
 Item {
@@ -36,22 +36,22 @@ Item {
     property bool useMouseCursor: true
     property var windowCursor: Qt.point(0,0)
     property bool centerInTile: false
-    property list<var> virtualDesktops: ([])
-    property var currentVirtualDesktopIndex: Workspace.desktops.indexOf(Workspace.currentDesktop)
+    property var virtualDesktops: []
+    property var currentVirtualDesktopIndex: workspace.currentDesktop - 1
     property bool virtualDesktopVisibile: false
     property bool moveToVirtualDesktopOnDrop: false
     property bool moveToVirtualDesktopOnTile: false
     property var positionAtMoveStart: ({x: 0, y: 0})
-    property var virtualDesktopAtMoveStart: Workspace.currentDesktop
-    property var virtualDesktopIndexAtMoveStart: Workspace.desktops.indexOf(Workspace.currentDesktop)
+    property var virtualDesktopAtMoveStart: workspace.currentDesktop
+    property var virtualDesktopIndexAtMoveStart: workspace.currentDesktop - 1
     property var virtualDesktopChangedSinceMoveStart: false
     property bool useAutoTilerPreview: false
     property bool validAutoTilerPreview: true
-    property list<var> popupGridLayouts: ([])
-    property list<var> popupGridAllLayouts: ([])
+    property var popupGridLayouts: []
+    property var popupGridAllLayouts: []
     property bool autoTilerEdgeScroll: false
 
-    property list<var> allConnections: ([])
+    property var allConnections: []
 
     function log(string) {
         if (!debugLogs) return;
@@ -721,7 +721,7 @@ SPECIAL_AUTO_TILER_3`;
     }
 
     function getCursorPosition() {
-        return useMouseCursor ? Workspace.cursorPos : windowCursor;
+        return useMouseCursor ? workspace.cursorPos : windowCursor;
     }
 
     function isValidWindow(client) {
@@ -744,18 +744,18 @@ SPECIAL_AUTO_TILER_3`;
 
         autoTiler.windowAdded(client);
 
-        client.closed.connect(onClosed);
-        client.interactiveMoveResizeStarted.connect(onInteractiveMoveResizeStarted);
-        client.interactiveMoveResizeStepped.connect(onInteractiveMoveResizeStepped);
-        client.interactiveMoveResizeFinished.connect(onInteractiveMoveResizeFinished);
+        client.windowClosed.connect(onClosed);
+        client.clientStartUserMovedResized.connect(onInteractiveMoveResizeStarted);
+        client.clientStepUserMovedResized.connect(onInteractiveMoveResizeStepped);
+        client.clientFinishUserMovedResized.connect(onInteractiveMoveResizeFinished);
 
         allConnections.push(disconnectAll);
 
         function disconnectAll() {
-            client.closed.disconnect(onClosed);
-            client.interactiveMoveResizeStarted.disconnect(onInteractiveMoveResizeStarted);
-            client.interactiveMoveResizeStepped.disconnect(onInteractiveMoveResizeStepped);
-            client.interactiveMoveResizeFinished.disconnect(onInteractiveMoveResizeFinished);
+            client.windowClosed.disconnect(onClosed);
+            client.clientStartUserMovedResized.disconnect(onInteractiveMoveResizeStarted);
+            client.clientStepUserMovedResized.disconnect(onInteractiveMoveResizeStepped);
+            client.clientFinishUserMovedResized.disconnect(onInteractiveMoveResizeFinished);
             let indexOf = allConnections.indexOf(disconnectAll);
             if (indexOf != -1) {
                 allConnections.splice(indexOf, 1);
@@ -810,8 +810,8 @@ SPECIAL_AUTO_TILER_3`;
                     delete client.mt_originalSize;
                 }
                 positionAtMoveStart = {x: client.x, y: client.y};
-                virtualDesktopAtMoveStart = Workspace.currentDesktop;
-                virtualDesktopIndexAtMoveStart = Workspace.desktops.indexOf(virtualDesktopAtMoveStart);
+                virtualDesktopAtMoveStart = workspace.currentDesktop;
+                virtualDesktopIndexAtMoveStart = workspace.currentDesktop - 1;
                 virtualDesktopChangedSinceMoveStart = false;
                 moving = true;
                 showTiler(true);
@@ -862,27 +862,27 @@ SPECIAL_AUTO_TILER_3`;
                         } else {
                             autoTiler.virtualDesktopAboutToChange(); // Notify to remove window from current virtual desktop auto-tiler
                             if (virtualDesktops[activeVirtualDesktopIndex].isAdd) {
-                                Workspace.createDesktop(Workspace.desktops.length, "");
-                                desktop = Workspace.desktops[Workspace.desktops.length - 1];
+                                workspace.createDesktop(workspace.desktops, "");
+                                desktop = workspace.desktops - 1;
                             } else {
                                 desktop = virtualDesktops[activeVirtualDesktopIndex].desktop;
                             }
-                            client.desktops = [virtualDesktops[activeVirtualDesktopIndex].desktop];
+                            client.desktop = desktop;
                             switch (config.virtualDesktopDropAction) {
                                 case 0:
                                     client.frameGeometry = Qt.rect(positionAtMoveStart.x, positionAtMoveStart.y, client.width, client.height);
                                     if (moveToVirtualDesktopOnDrop) {
-                                        Workspace.currentDesktop = desktop;
+                                        workspace.currentDesktop = desktop;
                                     } else {
-                                        Workspace.currentDesktop = virtualDesktopAtMoveStart;
+                                        workspace.currentDesktop = virtualDesktopAtMoveStart;
                                     }
                                     break;
                                 case 1:
-                                    // Workspace.activeWindow = client;
-                                    // Workspace.slotWindowMaximize();
+                                    // workspace.activeClient = client;
+                                    // workspace.slotWindowMaximize();
                                     client.setMaximize(true, true);
                                     if (!moveToVirtualDesktopOnDrop) {
-                                        Workspace.currentDesktop = virtualDesktopAtMoveStart;
+                                        workspace.currentDesktop = virtualDesktopAtMoveStart;
                                     }
                                     break;
                             }
@@ -924,8 +924,8 @@ SPECIAL_AUTO_TILER_3`;
                                     client.keepBelow = !client.keepBelow;
                                     break;
                                 case 'SPECIAL_MAXIMIZE':
-                                    // Workspace.activeWindow = client;
-                                    // Workspace.slotWindowMaximize();
+                                    // workspace.activeClient = client;
+                                    // workspace.slotWindowMaximize();
                                     client.setMaximize(true, true);
                                     break;
                                 case 'SPECIAL_MINIMIZE':
@@ -935,8 +935,8 @@ SPECIAL_AUTO_TILER_3`;
                                     client.fullScreen = true;
                                     break;
                                 case 'SPECIAL_CLOSE':
-                                    Workspace.activeWindow = client;
-                                    Workspace.slotWindowClose();
+                                    workspace.activeClient = client;
+                                    workspace.slotWindowClose();
                                     break;
                                 case 'SPECIAL_AUTO_TILER_TOGGLE':
                                     autoTiler.toggleAutoTile(client);
@@ -958,13 +958,13 @@ SPECIAL_AUTO_TILER_3`;
                                     addMargins(geometry, true, true, true, true);
                                     moveAndResizeWindow(client, geometry);
                                     if (settings.showTilingSuggestions && geometry.defaultLayouts !== undefined) {
-                                        windowSuggestions.showSuggestions(client, Workspace.activeScreen, Workspace.currentDesktop, Workspace.currentActivity, geometry.defaultLayouts, geometry.layoutIndex, geometry.tileIndex);
+                                        windowSuggestions.showSuggestions(client, workspace.activeScreen, workspace.currentDesktop, workspace.currentActivity, geometry.defaultLayouts, geometry.layoutIndex, geometry.tileIndex);
                                     }
                                     setDefaultSuggestionsVisibility();
                                     break;
                             }
                             if (virtualDesktopChangedSinceMoveStart && !moveToVirtualDesktopOnTile) {
-                                Workspace.currentDesktop = virtualDesktopAtMoveStart;
+                                workspace.currentDesktop = virtualDesktopAtMoveStart;
                                 setCurrentVirtualDesktop();
                             }
                         }
@@ -983,7 +983,7 @@ SPECIAL_AUTO_TILER_3`;
 
     function addMargins(geometry, left, right, top, bottom) {
         if (config.tileMargin > 0 || config.screenMargin != 0) {
-            let clientArea = Workspace.clientArea(KWin.FullScreenArea, Workspace.activeScreen, Workspace.currentDesktop);
+            let clientArea = workspace.clientArea(workspace.FullScreenArea, workspace.activeScreen, workspace.currentDesktop);
             if (left) {
                 let isEdge = Math.abs(geometry.x - clientArea.left) < 0.1;
                 geometry.x += isEdge ? config.tileMargin + config.screenMargin : config.tileMarginLeftTop;
@@ -1009,10 +1009,10 @@ SPECIAL_AUTO_TILER_3`;
         var largestIndex = -1;
         var largestArea = -1;
 
-        const windows = Workspace.stackingOrder;
+        const windows = workspace.clients;
         for (var i = 0; i < windows.length; i++) {
             let window = windows[i];
-            if (client.internalId != window.internalId && isValidWindow(window) && Workspace.activeScreen.name == window.output.name && !window.minimized && (window.onAllDesktops || window.desktops.includes(Workspace.currentDesktop)) && (window.activities.length == 0 || window.activities.includes(Workspace.currentActivity))) {
+            if (client.internalId != window.internalId && isValidWindow(window) && client.screen == window.screen && !window.minimized && (window.onAllDesktops || (window.desktops && window.desktops.some(d => d.x11DesktopNumber == workspace.currentDesktop))) && (!window.activities || window.activities.length == 0 || window.activities.includes(workspace.currentActivity))) {
                 let area = window.width * window.height;
                 if (area > largestArea) {
                     largestIndex = i;
@@ -1047,14 +1047,14 @@ SPECIAL_AUTO_TILER_3`;
     }
 
     function getFillGeometry(client, largest) {
-        let screenGeometry = Workspace.activeScreen.geometry;
+        let screenGeometry = workspace.clientArea(workspace.FullScreenArea, workspace.activeScreen, workspace.currentDesktop);
         //let freeAreas = [Qt.rect(screenGeometry.x, screenGeometry.y, screenGeometry.width, screenGeometry.height)];
-        let freeAreas = [Workspace.clientArea(KWin.FullScreenArea, Workspace.activeScreen, Workspace.currentDesktop)];
+        let freeAreas = [workspace.clientArea(workspace.FullScreenArea, workspace.activeScreen, workspace.currentDesktop)];
 
-        const windows = Workspace.stackingOrder;
+        const windows = workspace.clients;
         for (var i = 0; i < windows.length; i++) {
             let window = windows[i];
-            if (client.internalId != window.internalId && isValidWindow(window) && !window.minimized && (window.onAllDesktops || window.desktops.includes(Workspace.currentDesktop)) && (window.activities.length == 0 || window.activities.includes(Workspace.currentActivity))) {
+            if (client.internalId != window.internalId && isValidWindow(window) && !window.minimized && (window.onAllDesktops || (window.desktops && window.desktops.some(d => d.x11DesktopNumber == workspace.currentDesktop))) && (!window.activities || window.activities.length == 0 || window.activities.includes(workspace.currentActivity))) {
                 let area = Qt.rect(window.frameGeometry.x, window.frameGeometry.y, window.frameGeometry.width, window.frameGeometry.height);
                 removeUsedAreas(freeAreas, area);
                 removeOverlappingSmallerAreas(freeAreas);
@@ -1193,8 +1193,8 @@ SPECIAL_AUTO_TILER_3`;
     }
 
     function setCurrentVirtualDesktop() {
-        currentVirtualDesktopIndex = Workspace.desktops.indexOf(Workspace.currentDesktop);
-        virtualDesktopChangedSinceMoveStart = Workspace.currentDesktop != virtualDesktopAtMoveStart;
+        currentVirtualDesktopIndex = workspace.currentDesktop - 1;
+        virtualDesktopChangedSinceMoveStart = workspace.currentDesktop != virtualDesktopAtMoveStart;
         autoTiler.updateAutoTilersInPopupTiler();
     }
 
@@ -1205,7 +1205,7 @@ SPECIAL_AUTO_TILER_3`;
                 virtualDesktopVisibile = true;
                 break;
             case 2:
-                virtualDesktopVisibile = Workspace.desktops.length > 1;
+                virtualDesktopVisibile = workspace.desktops > 1;
                 break;
             case 3:
                 virtualDesktopVisibile = false;
@@ -1213,33 +1213,34 @@ SPECIAL_AUTO_TILER_3`;
         }
         virtualDesktops = [];
         if (virtualDesktopVisibile) {
-            for (let i = 0; i < Workspace.desktops.length; i++) {
-                virtualDesktops.push({desktop: Workspace.desktops[i], isAdd: false});
+            for (let i = 0; i < workspace.desktops; i++) {
+                virtualDesktops.push({desktop: i + 1, isAdd: false});
             }
-            if (config.showAddVirtualDesktopButton) {
-                virtualDesktops.push({isAdd: true});
-            }
+            // Temporarily disabled — "+" button breaks desktop creation flow
+            // if (config.showAddVirtualDesktopButton) {
+            //     virtualDesktops.push({isAdd: true});
+            // }
         }
     }
 
     function removeEmptyVirtualDesktops() {
         if (!config.autoRemoveEmptyVirtualDesktops) return;
-        let virtualDesktopWindowCount = Array.from({ length: Workspace.desktops.length }, () => 0);
+        let virtualDesktopWindowCount = Array.from({ length: workspace.desktops }, () => 0);
         virtualDesktopWindowCount[0]++;
         let filledCount = 1;
 
-        for (let i = Workspace.stackingOrder.length - 1; i >= 0; i--) {
-            let window = Workspace.stackingOrder[i];
+        for (let i = workspace.clients.length - 1; i >= 0; i--) {
+            let window = workspace.clients[i];
             if (isValidWindow(window)) {
                 if (window.onAllDesktops) {
                     // A window occupies all windows - do not remove anything
                     return;
                 }
                 for (let d = 0; d < window.desktops.length; d++) {
-                    let index = Workspace.desktops.indexOf(window.desktops[d]);
+                    let index = window.desktops[d].x11DesktopNumber - 1;
                     if (virtualDesktopWindowCount[index] == 0) {
                         filledCount++;
-                        if (filledCount == Workspace.desktops.length) {
+                        if (filledCount == workspace.desktops) {
                             // All virtual desktops filled - do not remove anything
                             return;
                         }
@@ -1253,7 +1254,7 @@ SPECIAL_AUTO_TILER_3`;
         for (let i = virtualDesktopWindowCount.length; i > 0; i--) {
             if (virtualDesktopWindowCount[i] == 0) {
                 log('Trying to remove empty virtual desktop with index: ' + i);
-                Workspace.removeDesktop(Workspace.desktops[i]);
+                workspace.removeDesktop(i);
             }
         }
 
@@ -1323,9 +1324,9 @@ SPECIAL_AUTO_TILER_3`;
             if (!window) {
                 return;
             // } else if (window.mt_autoRestore > 0) {
-            //     let desktopBefore = Workspace.currentDesktop;
+            //     let desktopBefore = workspace.currentDesktop;
             //     autoTiler.autoTileWindowOnStart(window);
-            //     Workspace.currentDesktop = desktopBefore;
+            //     workspace.currentDesktop = desktopBefore;
             } else {
                 timeoutData.push({time: Date.now() + delay, window: window});
                 timeoutData.sort((a, b) => a.time - b.time);
@@ -1355,7 +1356,7 @@ SPECIAL_AUTO_TILER_3`;
         }
 
         function onTimeoutTriggered() {
-            let desktopBefore = Workspace.currentDesktop;
+            let desktopBefore = workspace.currentDesktop;
 
             let timeNow = Date.now();
             while (timeoutData.length > 0 && timeoutData[0].time <= timeNow) {
@@ -1371,7 +1372,7 @@ SPECIAL_AUTO_TILER_3`;
                 }
             }
 
-            Workspace.currentDesktop = desktopBefore;
+            workspace.currentDesktop = desktopBefore;
 
             if (timeoutData.length == 0) {
                 autoTileTimer.triggered.disconnect(onTimeoutTriggered);
@@ -1440,9 +1441,9 @@ SPECIAL_AUTO_TILER_3`;
     }
 
     Connections {
-        target: Workspace
+        target: workspace
 
-        function onWindowAdded(client) {
+        function onClientAdded(client) {
             addWindow(client);
         }
 
@@ -1454,16 +1455,16 @@ SPECIAL_AUTO_TILER_3`;
             autoTiler.activitiesChanged();
         }
 
-        function onDesktopsChanged() {
+        function onNumberDesktopsChanged() {
             autoTiler.virtualDesktopsChanged();
             updateVirtualDesktops();
         }
 
-        function onScreensChanged() {
+        function onNumberScreensChanged() {
             autoTiler.screensChanged();
         }
 
-        function onWindowActivated(window) {
+        function onClientActivated(window) {
             autoTiler.windowActivated(window);
         }
     }
@@ -1475,7 +1476,7 @@ SPECIAL_AUTO_TILER_3`;
         loadConfig();
 
         // Add existing windows
-        const clients = Workspace.stackingOrder;
+        const clients = workspace.clients;
         for (var i = 0; i < clients.length; i++) {
             addWindow(clients[i]);
         }
@@ -1543,36 +1544,6 @@ SPECIAL_AUTO_TILER_3`;
         }
     }
 
-    ShortcutHandler {
-        name: "Mouse Tiler: Show Config"
-        text: "Mouse Tiler: Show Config"
-        sequence: "Ctrl+."
-        onActivated: {
-            log('Show Config triggered!');
-            if (mainMenuWindow && mainMenuWindow.visible) {
-                closeMainMenu();
-            } else {
-                showMainMenu();
-            }
-        }
-    }
-
-    ShortcutHandler {
-        name: "Mouse Tiler: Toggle Visibility"
-        text: "Mouse Tiler: Toggle Visibility"
-        sequence: "Meta+Space"
-        onActivated: {
-            log('Toggle Visibility triggered!');
-            if (moving) {
-                if (currentTiler.visible) {
-                    hideTiler();
-                } else {
-                    showTiler(false, true);
-                }
-            }
-        }
-    }
-
     function hideTiler() {
         if (currentTiler.visible) {
             currentTiler.visible = false;
@@ -1598,172 +1569,127 @@ SPECIAL_AUTO_TILER_3`;
         }
     }
 
-    ShortcutHandler {
-        name: "Mouse Tiler: Change Mode"
-        text: "Mouse Tiler: Change Mode"
-        sequence: "Meta+Ctrl+Space"
-        onActivated: {
-            log('Change Mode triggered!');
-            let wasVisible = hideTiler();
-            if (currentTiler == popupTiler) {
-                currentTiler = overlayTiler;
-            } else {
-                currentTiler = popupTiler;
-            }
-            if (wasVisible) {
-                showTiler(false, true);
-            }
+    QtObject {
+        Component.onCompleted: {
+            log('MouseTiler: Registering shortcuts...');
+            KWin.registerShortcut("Mouse Tiler: Show Config", "Mouse Tiler: Show Config", "Ctrl+.", function() {
+                log('Show Config triggered!');
+                if (mainMenuWindow && mainMenuWindow.visible) {
+                    closeMainMenu();
+                } else {
+                    showMainMenu();
+                }
+            });
+            KWin.registerShortcut("Mouse Tiler: Toggle Visibility", "Mouse Tiler: Toggle Visibility", "Meta+Space", function() {
+                log('Toggle Visibility triggered!');
+                if (moving) {
+                    if (currentTiler.visible) {
+                        hideTiler();
+                    } else {
+                        showTiler(false, true);
+                    }
+                }
+            });
+            KWin.registerShortcut("Mouse Tiler: Change Mode", "Mouse Tiler: Change Mode", "Meta+Ctrl+Space", function() {
+                log('Change Mode triggered!');
+                let wasVisible = hideTiler();
+                if (currentTiler == popupTiler) {
+                    currentTiler = overlayTiler;
+                } else {
+                    currentTiler = popupTiler;
+                }
+                if (wasVisible) {
+                    showTiler(false, true);
+                }
+            });
+            KWin.registerShortcut("Mouse Tiler: Show All/Toggle Span", "Mouse Tiler: Show All/Toggle Span", "Ctrl+Space", function() {
+                log('Show All/Toggle Span triggered!');
+                if (overlayTiler.visible) {
+                    overlayTiler.toggleSpan();
+                } else if (popupTiler.visible) {
+                    popupTiler.toggleShowAll();
+                }
+            });
+            KWin.registerShortcut("Mouse Tiler: Toggle Input Type", "Mouse Tiler: Toggle Input Type", "Ctrl+Alt+I", function() {
+                log('Toggle Input Type triggered!');
+                if (useMouseCursor && currentlyMovedWindow != null) {
+                    windowCursor = Qt.point(currentlyMovedWindow.x + currentlyMovedWindow.width / 2, currentlyMovedWindow.y);
+                }
+                useMouseCursor = !useMouseCursor;
+            });
+            KWin.registerShortcut("Mouse Tiler: Toggle Center In Tile", "Mouse Tiler: Toggle Center In Tile", "Meta+Ctrl+C", function() {
+                log('Toggle Center In Tile triggered!');
+                centerInTile = !centerInTile;
+            });
+            KWin.registerShortcut("Mouse Tiler: Toggle Move To Previous Virtual Desktop", "Mouse Tiler: Toggle Move To Previous Virtual Desktop", "Meta+Ctrl+V", function() {
+                log('Toggle Move To Previous Virtual Desktop triggered!');
+                moveToVirtualDesktopOnDrop = !moveToVirtualDesktopOnDrop;
+                moveToVirtualDesktopOnTile = !moveToVirtualDesktopOnTile;
+                if (popupTiler.visible) {
+                    popupTiler.updateHintContent();
+                }
+            });
+            KWin.registerShortcut("Mouse Tiler: Auto Tiler - Decrease Scroll Position", "Mouse Tiler: Auto Tiler - Scroll To Previous Window", "Ctrl+Alt+Left", function() {
+                log('Decrease Scroll Position triggered!');
+                autoTiler.modifyPrimaryIndex(-1);
+            });
+            KWin.registerShortcut("Mouse Tiler: Auto Tiler - Increase Scroll Position", "Mouse Tiler: Auto Tiler - Scroll To Next Window", "Ctrl+Alt+Right", function() {
+                log('Auto Tiler - Increase Scroll Position triggered!');
+                autoTiler.modifyPrimaryIndex(1);
+            });
+            KWin.registerShortcut("Mouse Tiler: Toggle Auto Tile For Active Window", "Mouse Tiler: Toggle Auto Tile For Active Window", "Ctrl+Alt+A", function() {
+                log('Toggle Auto Tile For Active Window triggered!');
+                autoTiler.printAutoTileId();
+                if (autoTiler.isValidAutoTileWindow(workspace.activeClient, true)) {
+                    autoTiler.toggleAutoTile(workspace.activeClient);
+                }
+            });
+            KWin.registerShortcut("Mouse Tiler: Change To Previous Auto Tiler", "Mouse Tiler: Change To Previous Auto Tiler", "Ctrl+Alt+X", function() {
+                log('Change To Previous Auto Tiler triggered!');
+                autoTiler.changeToPreviousTiler();
+            });
+            KWin.registerShortcut("Mouse Tiler: Change To Next Auto Tiler", "Mouse Tiler: Change To Next Auto Tiler", "Ctrl+Alt+C", function() {
+                log('Change To Next Auto Tiler triggered!');
+                autoTiler.changeToNextTiler();
+            });
+            KWin.registerShortcut("Mouse Tiler: Toggle Tiling Suggestions", "Mouse Tiler: Toggle Tiling Suggestions", "Meta+Ctrl+S", function() {
+                log('Toggle Tiling Suggestions triggered!');
+                settings.showTilingSuggestions = !settings.showTilingSuggestions;
+
+                if (!settings.showTilingSuggestions && windowSuggestions.visible) {
+                    windowSuggestions.visible = false;
+                    setDefaultSuggestionsVisibility();
+                } else if (popupTiler.visible) {
+                    popupTiler.updateHintContent();
+                }
+            });
         }
     }
 
-    ShortcutHandler {
-        name: "Mouse Tiler: Show All/Toggle Span"
-        text: "Mouse Tiler: Show All/Toggle Span"
-        sequence: "Ctrl+Space"
-        onActivated: {
-            log('Show All/Toggle Span triggered!');
-            if (overlayTiler.visible) {
-                overlayTiler.toggleSpan();
-            } else if (popupTiler.visible) {
-                popupTiler.toggleShowAll();
-            }
-        }
-    }
-
-    ShortcutHandler {
-        name: "Mouse Tiler: Toggle Input Type"
-        text: "Mouse Tiler: Toggle Input Type"
-        sequence: "Ctrl+Alt+I"
-        onActivated: {
-            log('Toggle Input Type triggered!');
-            if (useMouseCursor && currentlyMovedWindow != null) {
-                windowCursor = Qt.point(currentlyMovedWindow.x + currentlyMovedWindow.width / 2, currentlyMovedWindow.y);
-            }
-            useMouseCursor = !useMouseCursor;
-        }
-    }
-
-    ShortcutHandler {
-        name: "Mouse Tiler: Toggle Center In Tile"
-        text: "Mouse Tiler: Toggle Center In Tile"
-        sequence: "Meta+Ctrl+C"
-        onActivated: {
-            log('Toggle Center In Tile triggered!');
-            centerInTile = !centerInTile;
-        }
-    }
-
-    ShortcutHandler {
-        name: "Mouse Tiler: Toggle Move To Previous Virtual Desktop"
-        text: "Mouse Tiler: Toggle Move To Previous Virtual Desktop"
-        sequence: "Meta+Ctrl+V"
-        onActivated: {
-            log('Toggle Move To Previous Virtual Desktop triggered!');
-            moveToVirtualDesktopOnDrop = !moveToVirtualDesktopOnDrop;
-            moveToVirtualDesktopOnTile = !moveToVirtualDesktopOnTile;
-            if (popupTiler.visible) {
-                popupTiler.updateHintContent();
-            }
-        }
-    }
-
-    ShortcutHandler {
-        name: "Mouse Tiler: Auto Tiler - Decrease Scroll Position"
-        text: "Mouse Tiler: Auto Tiler - Scroll To Previous Window"
-        sequence: "Ctrl+Alt+Left"
-        onActivated: {
-            log('Decrease Scroll Position triggered!');
-            autoTiler.modifyPrimaryIndex(-1);
-        }
-    }
-
-    ShortcutHandler {
-        name: "Mouse Tiler: Auto Tiler - Increase Scroll Position"
-        text: "Mouse Tiler: Auto Tiler - Scroll To Next Window"
-        sequence: "Ctrl+Alt+Right"
-        onActivated: {
-            log('Auto Tiler - Increase Scroll Position triggered!');
-            autoTiler.modifyPrimaryIndex(1);
-        }
-    }
-
-    ShortcutHandler {
-        name: "Mouse Tiler: Toggle Auto Tile For Active Window"
-        text: "Mouse Tiler: Toggle Auto Tile For Active Window"
-        sequence: "Ctrl+Alt+A"
-        onActivated: {
-            log('Toggle Auto Tile For Active Window triggered!');
-            autoTiler.printAutoTileId();
-            if (autoTiler.isValidAutoTileWindow(Workspace.activeWindow, true)) {
-                autoTiler.toggleAutoTile(Workspace.activeWindow);
-            }
-        }
-    }
-
-    ShortcutHandler {
-        name: "Mouse Tiler: Change To Previous Auto Tiler"
-        text: "Mouse Tiler: Change To Previous Auto Tiler"
-        sequence: "Ctrl+Alt+X"
-        onActivated: {
-            log('Change To Previous Auto Tiler triggered!');
-            autoTiler.changeToPreviousTiler();
-        }
-    }
-
-    ShortcutHandler {
-        name: "Mouse Tiler: Change To Next Auto Tiler"
-        text: "Mouse Tiler: Change To Next Auto Tiler"
-        sequence: "Ctrl+Alt+C"
-        onActivated: {
-            log('Change To Next Auto Tiler triggered!');
-            autoTiler.changeToNextTiler();
-        }
-    }
-
-    ShortcutHandler {
-        name: "Mouse Tiler: Toggle Tiling Suggestions"
-        text: "Mouse Tiler: Toggle Tiling Suggestions"
-        sequence: "Meta+Ctrl+S"
-        onActivated: {
-            log('Toggle Tiling Suggestions triggered!');
-            settings.showTilingSuggestions = !settings.showTilingSuggestions;
-
-            if (!settings.showTilingSuggestions && windowSuggestions.visible) {
-                windowSuggestions.visible = false;
-                setDefaultSuggestionsVisibility();
-            } else if (popupTiler.visible) {
-                popupTiler.updateHintContent();
-            }
-        }
-    }
-
-    ScreenEdgeHandler {
+    ScreenEdgeItem {
+        id: screenEdgeLeft
+        edge: ScreenEdgeItem.LeftEdge
         enabled: autoTiler.shouldShowLeftScreenEdge
-        edge: ScreenEdgeHandler.LeftEdge
         onActivated: {
             log('LEFT Edge triggered!');
             autoTiler.modifyPrimaryIndex(-1);
         }
     }
 
-    ScreenEdgeHandler {
+    ScreenEdgeItem {
+        id: screenEdgeRight
+        edge: ScreenEdgeItem.RightEdge
         enabled: autoTiler.shouldShowRightScreenEdge
-        edge: ScreenEdgeHandler.RightEdge
         onActivated: {
             log('RIGHT Edge triggered!');
             autoTiler.modifyPrimaryIndex(1);
         }
     }
 
-    DBusCall {
+    QtObject {
         id: onScreenDisplay
-        service: "org.kde.plasmashell"
-        path: "/org/kde/osdService"
-        method: "showText"
-
         function show(message) {
-            this.arguments = ['dialog-error', message];
-            this.call();
+            console.warn('MouseTiler OSD: ' + message);
         }
     }
 }

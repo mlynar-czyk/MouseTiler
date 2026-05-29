@@ -1,6 +1,6 @@
-import QtQuick
-import org.kde.kwin
-import org.kde.plasma.core as PlasmaCore
+import QtQuick 2.12
+import org.kde.kwin 2.0
+import org.kde.plasma.core 2.0 as PlasmaCore
 
 // Window {
 PlasmaCore.Dialog {
@@ -26,7 +26,7 @@ PlasmaCore.Dialog {
     y: clientArea.y + root.config.overlayScreenEdgeMargin
     // flags: Qt.Popup | Qt.BypassWindowManagerHint | Qt.FramelessWindowHint
     // flags: Qt.Tool | Qt.BypassWindowManagerHint | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus
-    flags: (root.config.displayAs == 0 ? 0 : Qt.Popup) | (Qt.BypassWindowManagerHint | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus | Qt.WindowTransparentForInput)
+    flags: (root.config.displayAs == 0 ? 0 : Qt.Popup) | (Qt.BypassWindowManagerHint | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus /* | Qt.WindowTransparentForInput */)
     // color: "transparent" // Window
     visible: false
     backgroundHints: PlasmaCore.Types.NoBackground // PlasmaCore.Dialog
@@ -47,12 +47,12 @@ PlasmaCore.Dialog {
     }
 
     function updateScreen() {
-        if (activeScreen != Workspace.activeScreen) {
+        if (activeScreen != workspace.activeScreen) {
             autoTiler.updateShouldShowScreenEdges();
-            root.logE('updateScreen ' + Workspace.virtualScreenSize);
+            root.logE('updateScreen ' + workspace.virtualScreenSize);
             reset();
-            activeScreen = Workspace.activeScreen;
-            clientArea = Workspace.clientArea(KWin.FullScreenArea, activeScreen, Workspace.currentDesktop);
+            activeScreen = workspace.activeScreen;
+            clientArea = workspace.clientArea(workspace.FullScreenArea, activeScreen, workspace.currentDesktop);
             convertLayoutToScreen();
         }
     }
@@ -296,7 +296,7 @@ PlasmaCore.Dialog {
             onTriggered: {
                 updateScreen();
 
-                let localCursorPos = Workspace.activeScreen.mapFromGlobal(root.getCursorPosition());
+                let localCursorPos = Qt.point(root.getCursorPosition().x - clientArea.x, root.getCursorPosition().y - clientArea.y);
                 let x = localCursorPos.x - root.config.overlayScreenEdgeMargin;
                 let y = localCursorPos.y - root.config.overlayScreenEdgeMargin;
                 let index = -1;

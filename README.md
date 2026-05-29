@@ -199,7 +199,7 @@ Compatible with:
 
 ## <p id="support"></p>Support the project
 
-MouseTiler for Plasma 5 is a port of the [upstream project](https://github.com/rxappdev/MouseTiler) by rxappdev. Consider [sponsoring the original author](https://github.com/rxappdev/MouseTiler) if you find the tool useful.
+MouseTiler for Plasma 5 is a port of the [upstream project](https://github.com/rxappdev/MouseTiler) by [@rxappdev](https://github.com/rxappdev). Consider [sponsoring the original author](https://github.com/rxappdev/MouseTiler) if you find the tool useful.
 
 ## <p id="getintouch"></p>Get in touch ##
 

@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Mouse Tiler
+Comment=Tile your windows with minimal effort
+Type=Service
+X-KDE-ServiceTypes=KWin/Script
+X-Plasma-API=declarativescript
+X-Plasma-MainScript=ui/main.qml
+X-KDE-PluginInfo-Name=mousetiler
+X-KDE-PluginInfo-Author=rxappdev
+X-KDE-PluginInfo-Version=6.3.2
+X-KDE-PluginInfo-License=GPLv3
+X-KDE-PluginInfo-Website=https://github.com/rxappdev/MouseTiler
+X-KDE-ConfigModule=kwin/effects/configs/kcm_kwin4_genericscripted

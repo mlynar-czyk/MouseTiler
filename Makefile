@@ -21,12 +21,12 @@ $(PKGFILE): $(shell find $(SRC_DIR) -type f)
 
 install: build
 	@echo "Installing $(PKGFILE)..."
-	@kpackagetool6 --type=KWin/Script -i $(PKGFILE) || \
-	kpackagetool6 --type=KWin/Script -u $(PKGFILE)
+	@kpackagetool5 --type=KWin/Script -i $(PKGFILE) || \
+	kpackagetool5 --type=KWin/Script -u $(PKGFILE)
 
 uninstall:
 	@echo "Uninstalling $(SCRIPT_NAME)..."
-	@kpackagetool6 --type=KWin/Script -r $(SCRIPT_NAME)
+	@kpackagetool5 --type=KWin/Script -r $(SCRIPT_NAME)
 
 clean:
 	@echo "Cleaning up $(PKGFILE)..."
@@ -34,12 +34,12 @@ clean:
 
 enable:
 	@echo "Enabling $(SCRIPT_NAME)..."
-	@kwriteconfig6 --file kwinrc --group Plugins --key $(SCRIPT_NAME)Enabled true
+	@kwriteconfig5 --file kwinrc --group Plugins --key $(SCRIPT_NAME)Enabled true
 	@qdbus org.kde.KWin /KWin reconfigure
 
 disable:
 	@echo "Disabling $(SCRIPT_NAME)..."
-	@kwriteconfig6 --file kwinrc --group Plugins --key $(SCRIPT_NAME)Enabled false
+	@kwriteconfig5 --file kwinrc --group Plugins --key $(SCRIPT_NAME)Enabled false
 	@qdbus org.kde.KWin /KWin reconfigure
 
 restart-kwin:

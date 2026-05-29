@@ -55,7 +55,7 @@
           <string/>
          </property>
          <property name="alignment">
-          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
          </property>
          <property name="checkable">
           <bool>false</bool>
@@ -491,7 +491,7 @@
                <number>1</number>
               </property>
               <property name="stepType">
-               <enum>QAbstractSpinBox::StepType::DefaultStepType</enum>
+               <enum>QAbstractSpinBox::DefaultStepType</enum>
               </property>
              </widget>
             </item>
@@ -579,10 +579,10 @@
        <item>
         <spacer name="verticalSpacer_general">
          <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
+          <enum>Qt::Vertical</enum>
          </property>
          <property name="sizeType">
-          <enum>QSizePolicy::Policy::MinimumExpanding</enum>
+          <enum>QSizePolicy::MinimumExpanding</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -790,10 +790,10 @@
        <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
+          <enum>Qt::Vertical</enum>
          </property>
          <property name="sizeType">
-          <enum>QSizePolicy::Policy::MinimumExpanding</enum>
+          <enum>QSizePolicy::MinimumExpanding</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -865,10 +865,10 @@
              <number>100</number>
             </property>
             <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
+             <enum>Qt::Horizontal</enum>
             </property>
             <property name="tickPosition">
-             <enum>QSlider::TickPosition::TicksBelow</enum>
+             <enum>QSlider::TicksBelow</enum>
             </property>
            </widget>
           </item>
@@ -887,7 +887,7 @@
                <string>Popup Grid Background Opacity</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
+               <set>Qt::AlignCenter</set>
               </property>
              </widget>
             </item>
@@ -897,7 +897,7 @@
                <string>100</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
              </widget>
             </item>
@@ -1246,10 +1246,10 @@
        <item>
         <spacer name="verticalSpacer_2">
          <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
+          <enum>Qt::Vertical</enum>
          </property>
          <property name="sizeType">
-          <enum>QSizePolicy::Policy::MinimumExpanding</enum>
+          <enum>QSizePolicy::MinimumExpanding</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -1527,10 +1527,10 @@
        <item>
         <spacer name="verticalSpacer_4">
          <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
+          <enum>Qt::Vertical</enum>
          </property>
          <property name="sizeType">
-          <enum>QSizePolicy::Policy::MinimumExpanding</enum>
+          <enum>QSizePolicy::MinimumExpanding</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -1683,7 +1683,7 @@
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700; color:#ffaa00;&quot;&gt;IMPORTANT&lt;/span&gt; Please note that shortcuts have to be configured in &amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;System Settings &amp;gt; Keyboard &amp;gt; Shortcuts &amp;gt; Window Management &amp;gt; Mouse Tiler: ...&lt;/span&gt;&amp;quot; - this is just a list of shortcuts and explanation of what they do. They can be edited here for the purpose of displaying correct hints in the tiler but have no effect on actual keybinding.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -1710,11 +1710,11 @@
            <item row="2" column="0">
             <widget class="Line" name="line_3">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
-           <item row="9" column="1" alignment="Qt::AlignmentFlag::AlignTop">
+           <item row="9" column="1" alignment="Qt::AlignTop">
             <widget class="QLineEdit" name="kcfg_shortcutCenterInTile">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -1772,11 +1772,11 @@
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignCenter</set>
+              <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>
-           <item row="3" column="1" alignment="Qt::AlignmentFlag::AlignTop">
+           <item row="3" column="1" alignment="Qt::AlignTop">
             <widget class="QLineEdit" name="kcfg_shortcutChangeMode">
              <property name="font">
               <font>
@@ -1793,7 +1793,7 @@
              <property name="topMargin">
               <number>6</number>
              </property>
-             <item alignment="Qt::AlignmentFlag::AlignTop">
+             <item alignment="Qt::AlignTop">
               <widget class="QCheckBox" name="kcfg_hintShowAllSpan">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1818,14 +1818,14 @@
            <item row="2" column="1">
             <widget class="Line" name="line_2">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
            <item row="0" column="0">
             <widget class="Line" name="line_7">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
@@ -1855,7 +1855,7 @@
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Show Hint&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignCenter</set>
+              <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>
@@ -1874,7 +1874,7 @@
            <item row="2" column="2">
             <widget class="Line" name="line_15">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
@@ -1888,7 +1888,7 @@
            <item row="17" column="0">
             <widget class="Line" name="line">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
@@ -1897,7 +1897,7 @@
              <property name="topMargin">
               <number>6</number>
              </property>
-             <item alignment="Qt::AlignmentFlag::AlignTop">
+             <item alignment="Qt::AlignTop">
               <widget class="QCheckBox" name="kcfg_hintInputType">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1927,7 +1927,7 @@
              <property name="topMargin">
               <number>6</number>
              </property>
-             <item alignment="Qt::AlignmentFlag::AlignTop">
+             <item alignment="Qt::AlignTop">
               <widget class="QCheckBox" name="kcfg_hintVisibility">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1948,7 +1948,7 @@
            <item row="17" column="3">
             <widget class="Line" name="line_6">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
@@ -1957,7 +1957,7 @@
              <property name="topMargin">
               <number>6</number>
              </property>
-             <item alignment="Qt::AlignmentFlag::AlignTop">
+             <item alignment="Qt::AlignTop">
               <widget class="QCheckBox" name="kcfg_hintMoveOnDrop">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1972,7 +1972,7 @@
              </item>
             </layout>
            </item>
-           <item row="6" column="1" alignment="Qt::AlignmentFlag::AlignTop">
+           <item row="6" column="1" alignment="Qt::AlignTop">
             <widget class="QLineEdit" name="kcfg_shortcutVisibility">
              <property name="font">
               <font>
@@ -2001,14 +2001,14 @@
            <item row="0" column="1">
             <widget class="Line" name="line_8">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
            <item row="17" column="2">
             <widget class="Line" name="line_16">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
@@ -2024,7 +2024,7 @@
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Default Shortcut&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignCenter</set>
+              <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>
@@ -2051,7 +2051,7 @@
                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Popup Grid&lt;/span&gt;&amp;quot; mode: Show or hide all layouts.&lt;/p&gt;&lt;p&gt;&amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;Overlay&lt;/span&gt;&amp;quot; mode: Start or stop spanning from the hovered tile (a window can span multiple tiles).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
                </property>
                <property name="wordWrap">
                 <bool>true</bool>
@@ -2086,7 +2086,7 @@
              </property>
             </widget>
            </item>
-           <item row="7" column="1" alignment="Qt::AlignmentFlag::AlignTop">
+           <item row="7" column="1" alignment="Qt::AlignTop">
             <widget class="QLineEdit" name="kcfg_shortcutInputType">
              <property name="font">
               <font>
@@ -2098,7 +2098,7 @@
              </property>
             </widget>
            </item>
-           <item row="5" column="1" alignment="Qt::AlignmentFlag::AlignTop">
+           <item row="5" column="1" alignment="Qt::AlignTop">
             <widget class="QLineEdit" name="kcfg_shortcutShowAllSpan">
              <property name="font">
               <font>
@@ -2122,7 +2122,7 @@
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Name&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignCenter</set>
+              <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>
@@ -2164,7 +2164,7 @@
              <property name="topMargin">
               <number>6</number>
              </property>
-             <item alignment="Qt::AlignmentFlag::AlignTop">
+             <item alignment="Qt::AlignTop">
               <widget class="QCheckBox" name="kcfg_hintChangeMode">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2189,14 +2189,14 @@
            <item row="0" column="3">
             <widget class="Line" name="line_9">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
            <item row="0" column="2">
             <widget class="Line" name="line_17">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
@@ -2219,7 +2219,7 @@
              </property>
             </widget>
            </item>
-           <item row="4" column="1" alignment="Qt::AlignmentFlag::AlignTop">
+           <item row="4" column="1" alignment="Qt::AlignTop">
             <widget class="QLineEdit" name="lineEdit_5">
              <property name="font">
               <font>
@@ -2243,7 +2243,7 @@
              <property name="topMargin">
               <number>6</number>
              </property>
-             <item alignment="Qt::AlignmentFlag::AlignTop">
+             <item alignment="Qt::AlignTop">
               <widget class="QCheckBox" name="kcfg_hintCenterInTile">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2261,7 +2261,7 @@
            <item row="17" column="1">
             <widget class="Line" name="line_5">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
@@ -2276,7 +2276,7 @@
                 <string>Mouse Tiler: Show All/Toggle Span</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
                </property>
               </widget>
              </item>
@@ -2295,7 +2295,7 @@
            <item row="2" column="3">
             <widget class="Line" name="line_4">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
@@ -2306,7 +2306,7 @@
              </property>
             </widget>
            </item>
-           <item row="10" column="1" alignment="Qt::AlignmentFlag::AlignTop">
+           <item row="10" column="1" alignment="Qt::AlignTop">
             <widget class="QLineEdit" name="kcfg_shortcutMoveOnDrop">
              <property name="font">
               <font>
@@ -2349,7 +2349,7 @@
              <property name="topMargin">
               <number>6</number>
              </property>
-             <item alignment="Qt::AlignmentFlag::AlignTop">
+             <item alignment="Qt::AlignTop">
               <widget class="QCheckBox" name="kcfg_hintToggleTilingSuggestions">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2378,14 +2378,14 @@
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Meta&lt;/span&gt; key depends on your keyboard, but on most keyboards it is the Windows key. Most of the shortcuts should be used while moving a window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="alignment">
-            <set>Qt::AlignmentFlag::AlignHCenter|Qt::AlignmentFlag::AlignTop</set>
+            <set>Qt::AlignHCenter|Qt::AlignTop</set>
            </property>
           </widget>
          </item>
          <item>
           <widget class="Line" name="line_10">
            <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
+            <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>
@@ -2403,7 +2403,7 @@
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If a keyboard shortcut does not work (perhaps due to shortcut conflict), please manually assign it (or any shortcut you like) in &amp;quot;&lt;span style=&quot; font-weight:700;&quot;&gt;System Settings &amp;gt; Keyboard &amp;gt; Shortcuts &amp;gt; Window Management &amp;gt; Mouse Tiler: ...&lt;/span&gt;&amp;quot;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -2493,7 +2493,7 @@
                <string>Unit:</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
              </widget>
             </item>
@@ -2542,7 +2542,7 @@
                <string>Unit:</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
              </widget>
             </item>
@@ -2554,7 +2554,7 @@
        <item>
         <spacer name="verticalSpacer_6">
          <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
+          <enum>Qt::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -2925,7 +2925,7 @@
        <item>
         <spacer name="verticalSpacer_7">
          <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
+          <enum>Qt::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -2967,7 +2967,7 @@
           <item>
            <widget class="Line" name="line_18">
             <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
+             <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
@@ -3023,7 +3023,7 @@
                <string>Custom Editor (pick CUSTOM 3 from menu above)</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
+               <set>Qt::AlignCenter</set>
               </property>
              </widget>
             </item>
@@ -3132,7 +3132,7 @@
                <string>Custom Editor (pick CUSTOM 1 from menu above)</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
+               <set>Qt::AlignCenter</set>
               </property>
              </widget>
             </item>
@@ -3166,7 +3166,7 @@
                <string>Custom Editor (pick CUSTOM 2 from menu above)</string>
               </property>
               <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
+               <set>Qt::AlignCenter</set>
               </property>
              </widget>
             </item>
@@ -3465,10 +3465,10 @@
        <item>
         <spacer name="verticalSpacer_5">
          <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
+          <enum>Qt::Vertical</enum>
          </property>
          <property name="sizeType">
-          <enum>QSizePolicy::Policy::Expanding</enum>
+          <enum>QSizePolicy::Expanding</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -3517,10 +3517,10 @@
        <item>
         <spacer name="verticalSpacer_3">
          <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
+          <enum>Qt::Vertical</enum>
          </property>
          <property name="sizeType">
-          <enum>QSizePolicy::Policy::Expanding</enum>
+          <enum>QSizePolicy::Expanding</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -3535,10 +3535,10 @@
          <item>
           <spacer name="horizontalSpacer">
            <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
+            <enum>Qt::Horizontal</enum>
            </property>
            <property name="sizeType">
-            <enum>QSizePolicy::Policy::Minimum</enum>
+            <enum>QSizePolicy::Minimum</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -3553,7 +3553,7 @@
            <item>
             <widget class="Line" name="line_13">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
@@ -3569,7 +3569,7 @@
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:700; color:#ff0000;&quot;&gt;❤   &lt;/span&gt;Thank you for using this tiler!&lt;span style=&quot; font-weight:700; color:#ff0000;&quot;&gt;   ❤&lt;/span&gt;&lt;/p&gt;&lt;p&gt;If you enjoy it and maybe also &lt;a href=&quot;https://store.kde.org/p/2324743&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#5294e2;&quot;&gt;Remember Window Positions&lt;/span&gt;&lt;/a&gt;, I would really apreciate if you could support me in one way or another.&lt;/p&gt;&lt;p&gt;I have by now spent around 5 months (full time, 8+ hours of work a day) developing these two scripts, and I need to feed myself, my 4 year old son, and pay rent. Sadly donations are scarce (not even covering a single months rent. I am around $5000 behind by now).&lt;/p&gt;&lt;p&gt;Starting February 1st 2026, I will stop adding new features to the scripts, only fixing bugs. This is because I need to do work that earns money so I do not go bankrupt. If the donations ever take off, I will continue with the script development.&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:700; color:#ff0000;&quot;&gt;❤   &lt;/span&gt;Thank you - Rafael&lt;span style=&quot; font-weight:700; color:#ff0000;&quot;&gt;   ❤&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="alignment">
-              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
              </property>
              <property name="wordWrap">
               <bool>true</bool>
@@ -3582,7 +3582,7 @@
            <item>
             <widget class="Line" name="line_12">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
@@ -3606,7 +3606,7 @@
            <item>
             <widget class="Line" name="line_14">
              <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
@@ -3615,10 +3615,10 @@
          <item>
           <spacer name="horizontalSpacer_2">
            <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
+            <enum>Qt::Horizontal</enum>
            </property>
            <property name="sizeType">
-            <enum>QSizePolicy::Policy::Minimum</enum>
+            <enum>QSizePolicy::Minimum</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -3633,10 +3633,10 @@
        <item>
         <spacer name="verticalSpacer_debug">
          <property name="orientation">
-          <enum>Qt::Orientation::Vertical</enum>
+          <enum>Qt::Vertical</enum>
          </property>
          <property name="sizeType">
-          <enum>QSizePolicy::Policy::Expanding</enum>
+          <enum>QSizePolicy::Expanding</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -3672,7 +3672,7 @@
         <bool>false</bool>
        </property>
        <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignCenter</set>
+        <set>Qt::AlignCenter</set>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
@@ -3691,7 +3691,7 @@
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Designed to work optimally with my other script &lt;a href=&quot;https://github.com/rxappdev/RememberWindowPositions&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#007af4;&quot;&gt;Remember Window Positions&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignmentFlag::AlignCenter</set>
+        <set>Qt::AlignCenter</set>
        </property>
        <property name="openExternalLinks">
         <bool>true</bool>
@@ -3701,7 +3701,7 @@
      <item>
       <widget class="Line" name="line_11">
        <property name="orientation">
-        <enum>Qt::Orientation::Horizontal</enum>
+        <enum>Qt::Horizontal</enum>
        </property>
       </widget>
      </item>
@@ -3725,7 +3725,7 @@
           <string>&amp;nbsp;&lt;a href=&quot;https://discord.gg/Js6AYsnQQj&quot;&gt;Discord page&lt;/a&gt;</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignmentFlag::AlignCenter</set>
+          <set>Qt::AlignCenter</set>
          </property>
          <property name="margin">
           <number>0</number>
@@ -3750,7 +3750,7 @@
           <string>&lt;a href=&quot;https://github.com/rxappdev/MouseTiler&quot;&gt;Github page&lt;/a&gt;</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignmentFlag::AlignCenter</set>
+          <set>Qt::AlignCenter</set>
          </property>
          <property name="margin">
           <number>0</number>
@@ -3772,7 +3772,7 @@
           <string>&lt;a href=&quot;https://buymeacoffee.com/rxappdev&quot;&gt;Buy me a coffee&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;b style=&quot;color:#FF0000&quot;&gt;❤&lt;/b&gt;</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignmentFlag::AlignCenter</set>
+          <set>Qt::AlignCenter</set>
          </property>
          <property name="margin">
           <number>0</number>
@@ -3791,7 +3791,7 @@
           <string>&lt;a href=&quot;https://patreon.com/rxappdev&quot;&gt;Patreon&lt;/a&gt;&amp;nbsp;&amp;nbsp;&lt;b style=&quot;color:#FF0000&quot;&gt;❤&lt;/b&gt;</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignmentFlag::AlignCenter</set>
+          <set>Qt::AlignCenter</set>
          </property>
          <property name="openExternalLinks">
           <bool>true</bool>
